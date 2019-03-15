@@ -3,8 +3,7 @@ import { UserProfile } from "./Models/UserProfile";
 import { AppProfileLst } from "./Models/AppProfileLst";
 import { AppProfile } from "./Models/AppProfile";
 
-const spinalEnvDriveCore = require('spinal-env-drive-core');
-
+import * as spinalEnvDriveCore from "spinal-env-drive-core";
 
 const CONFIG_PATH = "/etc/config/";
 const USER_PROFILE_LST_PATH = CONFIG_PATH + "UserProfileLst";
@@ -49,23 +48,24 @@ export class SpinalAdminInit extends spinalEnvDriveCore.SpinalDrive_App {
       .wait_connect()
       .then(() => {
         SpinalAdminInit.initUserProfileLst(ngSpinalCore)
-          .then(SpinalAdminInit.initAppProfileLst(ngSpinalCore))
+          .then(SpinalAdminInit.initAppProfileLst.bind(this,ngSpinalCore))
+
       })
   };
 
   static initUserProfileLst(ngSpinalCore) : Promise<void> {
     return ngSpinalCore.load(USER_PROFILE_LST_PATH)
       .then(SpinalAdminInit.onUserProfileLstLoadSuccessful)
-      .catch(SpinalAdminInit.onUserProfileLstLoadFail(ngSpinalCore));
+      .catch(SpinalAdminInit.onUserProfileLstLoadFail.bind(this,ngSpinalCore));
   }
 
   static initAppProfileLst(ngSpinalCore) : Promise<void> {
     return ngSpinalCore.load(APP_PROFILE_LST_PATH)
       .then(SpinalAdminInit.onAppProfileLstLoadSuccessful)
-      .catch(SpinalAdminInit.onAppProfileLstLoadFail(ngSpinalCore));
+      .catch(SpinalAdminInit.onAppProfileLstLoadFail.bind(this,ngSpinalCore));
   }
 
-  static onUserProfileLstLoadSuccessful(userProfileLst) : Promise<void>{
+  static onUserProfileLstLoadSuccessful() : Promise<void>{
     return Promise.resolve();
   }
 
@@ -77,7 +77,11 @@ export class SpinalAdminInit extends spinalEnvDriveCore.SpinalDrive_App {
       userProfileLst.users.push(new UserProfile(i + 1, user.name, user.description));
     }
     return ngSpinalCore.store(userProfileLst, USER_PROFILE_LST_PATH)
-      .then(SpinalAdminInit.onUserProfileLstLoadSuccessful);
+      .then(SpinalAdminInit.onUserProfileLstLoadSuccessful)
+      .catch(() => {
+        console.log('store rejection from onUserProfileLstLoadFail');
+        return Promise.resolve();
+      })
   }
 
   static onAppProfileLstLoadSuccessful() : Promise<void>{
@@ -95,6 +99,10 @@ export class SpinalAdminInit extends spinalEnvDriveCore.SpinalDrive_App {
     }
 
     return ngSpinalCore.store(appProfileLst, APP_PROFILE_LST_PATH)
-      .then(SpinalAdminInit.onAppProfileLstLoadSuccessful);
+      .then(SpinalAdminInit.onAppProfileLstLoadSuccessful)
+      .catch(() => {
+        console.log('store rejection from onAppProfileLstLoadFail');
+        return Promise.resolve();
+      })
   }
 }
