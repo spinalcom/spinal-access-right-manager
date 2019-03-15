@@ -1,0 +1,17 @@
+{
+  "name": "spinal-access-rights-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.7.8",
+    "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
+    "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git"
+  }
+}
