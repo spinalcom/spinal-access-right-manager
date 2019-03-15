@@ -1,19 +1,16 @@
-import { Model, spinalCore } from 'spinal-core-connectorjs_type';
+import { Model, Lst, spinalCore } from 'spinal-core-connectorjs_type';
+
 
 export class UserProfile extends Model {
-  public id: spinal.Str;
-  public name: spinal.Str;
-  public description: spinal.Str;
+  public appProfiles: spinal.Lst<spinal.Val>;
 
-  constructor(id: number, name: string, description: string) {
+  constructor(appProfiles: number[] = []) {
     super();
+
     this.add_attr({
-      id: id,
-      name: name,
-      description: description
+      appProfiles: appProfiles
     })
   }
-
 }
 
 spinalCore.register_models(UserProfile);
