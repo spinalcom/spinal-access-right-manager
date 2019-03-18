@@ -1,8 +1,5 @@
-import * as spinalEnvDriveCore from "spinal-env-drive-core";
-export declare class SpinalAdminInit extends spinalEnvDriveCore.SpinalDrive_App {
-    constructor();
-    action(obj: any): void;
-    init(authService: any, ngSpinalCore: any): void;
+export declare class SpinalAdminInit {
+    static init(authService: any, ngSpinalCore: any): void;
     static initRoleLst(ngSpinalCore: any): Promise<void>;
     static initAppProfileLst(ngSpinalCore: any): Promise<void>;
     static onRoleLstLoadSuccessful(): Promise<void>;
