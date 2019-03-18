@@ -30,10 +30,24 @@ const USERS = [
   {name: DEFAULT_USER_NAME, description: DEFAULT_USER_DESCRIPTION}
 ];
 
-export class SpinalAdminInit  {
+export class SpinalAdminInit extends spinalEnvDriveCore.SpinalDrive_App {
+  constructor() {
+    super(
+      "Init",
+      "init",
+      15,
+      "crop",
+      "init system"
+    );
+  }
 
+  action(obj: any): void {
+    const authService = obj.scope.injector.get('authService');
+    const ngSpinalCore = obj.scope.injector.get('ngSpinalCore');
+    this.init(authService, ngSpinalCore);
+  }
 
-  static init(authService: any, ngSpinalCore: any): void {
+  init(authService: any, ngSpinalCore: any): void {
     authService
       .wait_connect()
       .then(() => {
