@@ -1,5 +1,5 @@
 {
-  "name": "spinal-access-rights-manager",
+  "name": "spinal-env-admin-access-rights-manager",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
