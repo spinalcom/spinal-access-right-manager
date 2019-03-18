@@ -5,7 +5,6 @@ const Role_1 = require("./Models/Role");
 const UserProfile_1 = require("./Models/UserProfile");
 const AppProfileLst_1 = require("./Models/AppProfileLst");
 const AppProfile_1 = require("./Models/AppProfile");
-const spinalEnvDriveCore = require("spinal-env-drive-core");
 const spinal_core_connectorjs_type_1 = require("spinal-core-connectorjs_type");
 const CONFIG_PATH = "/etc/config/";
 const USERS_FILE_PATH = "/etc/users";
@@ -28,19 +27,12 @@ const USERS = [
     { name: ASSET_MANAGER_NAME, description: ASSET_MANAGER_NAME },
     { name: DEFAULT_USER_NAME, description: DEFAULT_USER_DESCRIPTION }
 ];
-class SpinalAdminInit extends spinalEnvDriveCore.SpinalDrive_App {
-    constructor() {
-        super("Init", "init", 15, "crop", "init system");
-    }
-    action(obj) {
-        const authService = obj.scope.injector.get('authService');
-        const ngSpinalCore = obj.scope.injector.get('ngSpinalCore');
-        this.init(authService, ngSpinalCore);
-    }
-    init(authService, ngSpinalCore) {
+class SpinalAdminInit {
+    static init(authService, ngSpinalCore) {
         authService
             .wait_connect()
             .then(() => {
+            console.log('init admin');
             SpinalAdminInit.initRoleLst(ngSpinalCore)
                 .then(SpinalAdminInit.initAppProfileLst.bind(this, ngSpinalCore))
                 .then(SpinalAdminInit.initDefaultUser.bind(this, ngSpinalCore));
