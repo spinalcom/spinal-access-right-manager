@@ -114,4 +114,4 @@ class SpinalAdminInit {
     }
 }
 exports.SpinalAdminInit = SpinalAdminInit;
-//# sourceMappingURL=accesRigthManagerButton.js.map
+//# sourceMappingURL=SpinalAccesRightsService.js.map

@@ -32,7 +32,6 @@ const USERS = [
 
 export class SpinalAdminInit  {
 
-
   static init(authService: any, ngSpinalCore: any): void {
 
     authService
