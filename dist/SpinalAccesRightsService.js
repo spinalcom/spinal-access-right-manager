@@ -56,7 +56,7 @@ class SpinalAdminInit {
         for (let i = 0; i < USERS.length; i++) {
             const user = USERS[i];
             //start id = 1
-            userProfileLst.users.push(new Role_1.Role(i + 1, user.name, user.description));
+            userProfileLst.users.push(new Role_1.Role(i, user.name, user.description));
         }
         return ngSpinalCore.store(userProfileLst, ROLE_LST_PATH)
             .then(SpinalAdminInit.onRoleLstLoadSuccessful)
