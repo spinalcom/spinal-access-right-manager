@@ -1,5 +1,5 @@
 require('spinal-env-drive-core');
-import  {SpinalAdminInit} from './accesRigthManagerButton';
+import  {SpinalAdminInit} from './SpinalAccesRightsService';
 const angular = require('angular');
 
 const interval = setInterval(() => {
