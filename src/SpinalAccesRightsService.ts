@@ -119,8 +119,8 @@ export class SpinalAdminInit  {
             for (let i = 0; i < users.length; i++) {
               const user = users[i];
               if (!dir.has(user.name)) {
-                //6 is the id of default user role. 1 is admin role
-                const type = (user.type == 0) ? 1 : 5;
+                //4 is the id of default user role. 0 is admin role
+                const type = (user.type == 0) ? 0 : 4;
                 const userProfile: UserProfile = new UserProfile([type]);
                 dir.add_file(user.name, userProfile);
               }
