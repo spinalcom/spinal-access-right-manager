@@ -29,10 +29,10 @@ const USERS = [
 ];
 class SpinalAdminInit {
     static init(authService, ngSpinalCore) {
-        authService
+        return authService
             .wait_connect()
             .then(() => {
-            SpinalAdminInit.initRoleLst(ngSpinalCore)
+            return SpinalAdminInit.initRoleLst(ngSpinalCore)
                 .then(SpinalAdminInit.initAppProfileLst.bind(this, ngSpinalCore))
                 .then(SpinalAdminInit.initDefaultUser.bind(this, ngSpinalCore));
         });

@@ -32,12 +32,12 @@ const USERS = [
 
 export class SpinalAdminInit  {
 
-  static init(authService: any, ngSpinalCore: any): void {
+  static init(authService: any, ngSpinalCore: any): Promise<void>  {
 
-    authService
+    return authService
       .wait_connect()
       .then(() => {
-        SpinalAdminInit.initRoleLst(ngSpinalCore)
+        return SpinalAdminInit.initRoleLst(ngSpinalCore)
           .then(SpinalAdminInit.initAppProfileLst.bind(this, ngSpinalCore))
           .then(SpinalAdminInit.initDefaultUser.bind(this, ngSpinalCore));
       })

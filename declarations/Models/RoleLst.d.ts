@@ -1,6 +1,6 @@
 import { Model } from 'spinal-core-connectorjs_type';
-import { Role } from "./UserProfile";
+import { UserProfile } from "./UserProfile";
 export declare class RoleLst extends Model {
-    users: spinal.Lst<Role>;
+    users: spinal.Lst<UserProfile>;
     constructor();
 }
