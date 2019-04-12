@@ -1,23 +1,27 @@
 require("spinal-env-drive-core");
-import { SpinalAdminInit } from "./SpinalAccesRightsService";
+import { SpinalAdminInit } from "./SpinalAdminInit";
+
+// @ts-ignore
 const angular = require("angular");
 
 const interval = setInterval(() => {
-  if (angular.element("body > div").injector()) {
-    const authService = angular
-      .element("body > div")
-      .injector()
-      .get("authService");
-    const ngSpinalCore = angular
-      .element("body > div")
-      .injector()
-      .get("ngSpinalCore");
-    SpinalAdminInit.init(authService, ngSpinalCore).then(
+  const injector = angular
+    .element("body > div")
+    .injector();
+  if (injector) {
+    const authService = injector.get("authService");
+    const ngSpinalCore = injector.get("ngSpinalCore");
+    const SpinalAdmin = new SpinalAdminInit(ngSpinalCore, authService);
+    SpinalAdmin.init()
+      .then(
       () => {
         clearInterval(interval);
       },
-      () => {
+      (e) => {
+        clearInterval(interval);
       }
-    );
+    ).catch(e => {
+      clearInterval(interval);
+    } );
   }
 }, 2000);
