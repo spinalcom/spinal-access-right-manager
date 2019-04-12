@@ -4,7 +4,7 @@ import { SpinalAdminInit } from "./SpinalAdminInit";
 const angular = require("angular");
 
 
-export default () => {
+export default (() => {
   return new Promise((resolve, reject) => {
     const interval = setInterval(() => {
       const injector = angular
@@ -32,4 +32,4 @@ export default () => {
     }, 2000);
 
   })
-}
+})()
