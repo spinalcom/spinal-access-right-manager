@@ -52,6 +52,7 @@ export class SpinalAdminInit {
           .then(this.initAppProfileLst.bind(this, this.spinalCore))
           .then(this.initDefaultUser.bind(this, this.spinalCore))
           .then(this.initAppProfileAliasLst.bind(this, this.spinalCore))
+
           .catch((e) => {
             console.log(e);
           })
