@@ -25,7 +25,7 @@ export default (() => {
               resolve()
             }
           ).catch(e => {
-          reject()
+          reject();
           clearInterval(interval);
         });
       }
