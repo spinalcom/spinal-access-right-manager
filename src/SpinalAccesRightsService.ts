@@ -5,8 +5,8 @@ import { AppProfileLst } from "./Models/AppProfileLst";
 import { AppProfile } from "./Models/AppProfile";
 
 import * as spinalEnvDriveCore from "spinal-env-drive-core";
-import { Directory } from "spinal-core-connectorjs_type";
-
+import { Directory, Ptr } from "spinal-core-connectorjs_type";
+import { loadModelPtr } from './loadModelPtr'
 const CONFIG_PATH = "/etc/config/";
 const USERS_FILE_PATH = "/etc/users";
 const USERS_PROFILE_DIR_NAME = "UserProfileDir";
@@ -22,24 +22,37 @@ const ASSET_MANAGER_NAME = 'Asset Manager';
 const DEFAULT_USER_NAME = 'Basic Utilisateur';
 const DEFAULT_USER_DESCRIPTION = 'Defaut utilisateur description';
 
+const USERS_DIR = '__users__';
+const PUBLIC_DIR = 'public';
+const PUBLIC_DIR_PATH = `${USERS_DIR}/${PUBLIC_DIR}`;
+
 const USERS = [
-  {name: ADMIN_NAME, description: ADMIN_DESCRIPTION},
-  {name: INTEGRATOR_NAME, description: INTEGRATOR_DESCRIPTION},
-  {name: MAINTAINER_NAME, description: MAINTAINER_DESCRIPTION},
-  {name: ASSET_MANAGER_NAME, description: ASSET_MANAGER_NAME},
-  {name: DEFAULT_USER_NAME, description: DEFAULT_USER_DESCRIPTION}
+  { name: ADMIN_NAME, description: ADMIN_DESCRIPTION },
+  { name: INTEGRATOR_NAME, description: INTEGRATOR_DESCRIPTION },
+  { name: MAINTAINER_NAME, description: MAINTAINER_DESCRIPTION },
+  { name: ASSET_MANAGER_NAME, description: ASSET_MANAGER_NAME },
+  { name: DEFAULT_USER_NAME, description: DEFAULT_USER_DESCRIPTION }
 ];
 
-export class SpinalAdminInit  {
+export class SpinalAdminInit {
+  static wait() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    })
+  }
 
-  static init(authService: any, ngSpinalCore: any): Promise<void>  {
+  static init(authService: any, ngSpinalCore: any): Promise<void> {
 
     return authService
       .wait_connect()
+      .then(SpinalAdminInit.wait)
       .then(() => {
         return SpinalAdminInit.initRoleLst(ngSpinalCore)
           .then(SpinalAdminInit.initAppProfileLst.bind(this, ngSpinalCore))
-          .then(SpinalAdminInit.initDefaultUser.bind(this, ngSpinalCore));
+          .then(SpinalAdminInit.initDefaultUser.bind(this, ngSpinalCore))
+          .then(SpinalAdminInit.initPublicDir.bind(this, ngSpinalCore));
       })
   };
 
@@ -55,6 +68,43 @@ export class SpinalAdminInit  {
       .catch(SpinalAdminInit.onAppProfileLstLoadFail.bind(this, ngSpinalCore));
   }
 
+  static initPublicDir(ngSpinalCore): Promise<void> {
+    return ngSpinalCore.load(USERS_DIR)
+      .then(SpinalAdminInit.onInitPublicDir)
+  }
+
+  static getFileTargetServerId(file) {
+    const ptr = file._ptr;
+    if (ptr.data.value) return ptr.data.value;
+    return ptr.data.model._server_id;
+  }
+
+  static getOrCreatePublicDir(userDir) {
+    const file = userDir.detect((x) => x.name.get() === PUBLIC_DIR);
+    if (!file) {
+      // file doesn't exist
+      const dir = new Directory();
+      userDir.add_file(PUBLIC_DIR, dir);
+      return Promise.resolve(dir);
+    }
+    return loadModelPtr(file);
+  }
+
+  static onInitPublicDir(userDir) {
+    return SpinalAdminInit.getOrCreatePublicDir(userDir).then((publicDir)=> {
+      for (let i = 0; i < userDir.length; i++) {
+        if (userDir[i].name.get() !== PUBLIC_DIR &&
+          userDir[i]._info &&
+          !userDir[i]._info.publicDir) {
+          userDir[i]._info.add_attr('publicDir', new Ptr(publicDir));
+        }
+      }
+    })
+
+  }
+
+
+
   static onRoleLstLoadSuccessful(): Promise<void> {
     return Promise.resolve();
   }
@@ -64,7 +114,7 @@ export class SpinalAdminInit  {
     for (let i = 0; i < USERS.length; i++) {
       const user = USERS[i];
       //start id = 1
-      userProfileLst.users.push(new Role(i , user.name, user.description));
+      userProfileLst.users.push(new Role(i, user.name, user.description));
     }
     return ngSpinalCore.store(userProfileLst, ROLE_LST_PATH)
       .then(SpinalAdminInit.onRoleLstLoadSuccessful)
